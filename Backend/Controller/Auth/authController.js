@@ -2,28 +2,23 @@ import User from "../../Models/Users/userModel.js";
 import { emailValidation, passwordValidation, userCreation, userCreationResp } from "../Utils/utils.js";
 import { staticResponse } from "../Utils/static.js";
 import { decryptPassword } from "../Utils/passwordEncryption.js";
-import { generateJwtToken } from "./jwtToken.js";
+import { generateJwtToken, removeJwtToken } from "./jwtToken.js";
 
 export const login = async (req, res) => {
 
     const { userName, password } = req.body;
-    const userID = userName.trim();
+    const userID = userName && userName.trim();
     const userExist = await User.findOne({ userName: userID });
+    const userPassworsValid = userExist && await decryptPassword(password, userExist.password);
+    const loginResponse = userExist && userPassworsValid ? staticResponse.LoginSuccess : staticResponse.Common;
 
-    if (!userExist) {
-        return res.status(404).json({ message: staticResponse.LoginUserNotExist });
-    }
-
-    const user = await decryptPassword(password, userExist.password);
-
-    if (!user) {
-        return res.status(400).json({ message: staticResponse.LoginPasswordError });
+    if (!userExist || !userPassworsValid) {
+        return res.status(400).json({ message: !userExist ? staticResponse.LoginUserNotExist : (!userPassworsValid ? staticResponse.LoginPasswordError : staticResponse.Common) });
     }
 
     try {
-        const generateUserToken = await generateJwtToken(user);
-        res.cookie('gfg_token_header_key', generateUserToken);
-        return res.status(200).json({  message: staticResponse.LoginSuccess });
+        await generateJwtToken(userExist?._id, res);
+        return res.status(200).json({ message: loginResponse });
     }
     catch (error) {
         return res.status(400).json({ error: error });
@@ -32,39 +27,36 @@ export const login = async (req, res) => {
 
 export const signUp = async (req, res) => {
 
-    const { email, password } = req.body;
-    const validEmail = emailValidation(email);
-    const validPassword = passwordValidation(password);
+    const { email, password, userName } = req.body;
+    const validEmail = email && emailValidation(email);
+    const validPassword = password && passwordValidation(password);
     const existingUser = await User.findOne({ email: email });
+    const existingUserName = await User.findOne({ userName: userName });
+    const errorResponse = existingUser ? staticResponse.userExist : (existingUserName ? staticResponse.userNameExist : !validPassword ? staticResponse.passwordNotValid : !validEmail ? staticResponse.emailNotValid : staticResponse.Common);
 
-    if (existingUser) {
-        return res.status(400).json({ error: staticResponse.userExist });
-    }
 
-    if (!validEmail) {
-        return res.status(400).json({ error: staticResponse.emailNotValid });
-    }
-
-    if (!validPassword) {
-        return res.status(400).json({ error: staticResponse.passwordNotValid });
+    if (!validEmail || !validPassword || existingUser || existingUserName) {
+        return res.status(400).json({ error: errorResponse });
     }
 
     try {
         const newUser = await userCreation(req.body);
-        if (newUser) {
-            await newUser.save();
-            const generateUserToken = await generateJwtToken(user);
-            res.cookie('gfg_token_header_key', generateUserToken);
-            return res.status(201).json({ message: staticResponse.userCreated, data: { user } });
-        } else {
-            return res.status(400).json({ error: staticResponse.creationError });
-        }
+        const user = await userCreationResp(newUser);
+        await newUser.save();
+        await generateJwtToken(newUser?._id, res);
+        return res.status(201).json({ message: staticResponse.userCreated, data: { user } });
 
     } catch (error) {
         return res.status(400).json({ error: error });
     }
 }
 
-export const signUpTest = async (req, res) => {
+export const fetchProfile = async (req, res) => {
+    return res.status(200).json({ message: "Successfully Verified" });
+}
 
+export const logoff = async (req, res) => {
+    const logoffReponse = staticResponse.Logoff;
+    await removeJwtToken(res, logoffReponse);
+    return res.status(200).json({ message: logoffReponse });
 }
