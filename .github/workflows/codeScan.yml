@@ -47,7 +47,3 @@ jobs:
                       -Dsonar.organization=snshari80
                       -Dsonar.projectKey=snshari80_MERN
                       -Dsonar.python.coverage.reportPaths=coverage.xml 
-            -   name: Upload SARIF file
-                uses: github/codeql-action/upload-sarif@v3
-                with:
-                    sarif_file: codescan.sarif
