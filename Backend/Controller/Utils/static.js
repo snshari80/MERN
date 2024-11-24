@@ -5,9 +5,11 @@ export const staticResponse = {
     passwordNotValid:"Password is not valid, Please type valid password!",
     userCreated:"User created successfully.",
     creationError:"User creation has some errors!",
-    LoginSuccess:"User logged in.s",
+    LoginSuccess:"User logged in successfully",
     LoginPasswordError:"Please check the password!",
     LoginUserNotExist:"User does't exist!",
     Logoff:"Successfully logged off.",
-    Common:"Please try again!"
+    Common:"Please try again!",
+    CommonPharse:"Please check details!",
+    userProfileRetrived:"User data retrived successfully"
 }
