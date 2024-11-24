@@ -38,7 +38,7 @@ jobs:
                     key: ${{ runner.os }}-sonar
                     restore-keys: ${{ runner.os }}-sonar
             -   name: Run Analysis
-                uses: codescan-io/codescan-scanner-action@5b2e8c5683ef6a5adc8fa3b7950bb07debccce12
+                uses: sonarsource/sonarcloud-github-action@master
                 with:
                     login: ${{ secrets.SONAR_TOKEN }}
                     organization: ${{ secrets.ORGANIZATION_KEY }}
