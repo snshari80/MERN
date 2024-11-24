@@ -2,7 +2,7 @@ import User from "../../Models/Users/userModel.js";
 import { emailValidation, passwordValidation, userCreation, userCreationResp } from "../Utils/utils.js";
 import { staticResponse } from "../Utils/static.js";
 import { decryptPassword } from "../Utils/passwordEncryption.js";
-import { generateJwtToken, removeJwtToken } from "./jwtToken.js";
+import { generateJwtToken, removeJwtToken } from "../../MiddleWare/jwtToken.js";
 
 export const login = async (req, res) => {
 
@@ -17,11 +17,12 @@ export const login = async (req, res) => {
     }
 
     try {
+        const user = await userCreationResp(userExist);
         await generateJwtToken(userExist?._id, res);
-        return res.status(200).json({ message: loginResponse });
+        return res.status(200).json({ message: loginResponse, data: user });
     }
     catch (error) {
-        return res.status(400).json({ error: error });
+        return res.status(401).json({ error: error });
     }
 }
 
@@ -34,9 +35,8 @@ export const signUp = async (req, res) => {
     const existingUserName = await User.findOne({ userName: userName });
     const errorResponse = existingUser ? staticResponse.userExist : (existingUserName ? staticResponse.userNameExist : !validPassword ? staticResponse.passwordNotValid : !validEmail ? staticResponse.emailNotValid : staticResponse.Common);
 
-
     if (!validEmail || !validPassword || existingUser || existingUserName) {
-        return res.status(400).json({ error: errorResponse });
+        return res.status(401).json({ error: errorResponse });
     }
 
     try {
@@ -44,19 +44,21 @@ export const signUp = async (req, res) => {
         const user = await userCreationResp(newUser);
         await newUser.save();
         await generateJwtToken(newUser?._id, res);
-        return res.status(201).json({ message: staticResponse.userCreated, data: { user } });
+        return res.status(200).json({ message: staticResponse.userCreated, data: { user } });
 
     } catch (error) {
-        return res.status(400).json({ error: error });
+        return res.status(401).json({ error: error });
     }
-}
 
-export const fetchProfile = async (req, res) => {
-    return res.status(200).json({ message: "Successfully Verified" });
 }
 
 export const logoff = async (req, res) => {
-    const logoffReponse = staticResponse.Logoff;
-    await removeJwtToken(res, logoffReponse);
-    return res.status(200).json({ message: logoffReponse });
+    try {
+        const logoffReponse = staticResponse.Logoff;
+        await removeJwtToken(res, logoffReponse);
+        return res.status(200).json({ message: logoffReponse });
+    } catch (error) {
+        return res.status(401).json({ error });
+    }
+
 }
