@@ -1,4 +1,4 @@
-<h1 align="center">Hi 👋, I'm Hari Nagarajan</h1>
+<h1 align="center">Hi 👋, I'm Hari Nagarajan S</h1>
 <h3 align="center">Full Stack Developer → Generative AI Engineer</h3>
 
 <p align="center">
@@ -52,7 +52,7 @@ Building intelligent, scalable applications by combining modern web technologies
 
 ## 📌 Featured Projects
 - 🚀 AI-powered apps (LLM, RAG, workflows)
-- 🌐 Full stack scalable applications
+- 🌐  AI-powered Full stack scalable applications
 - ⚡ Automation tools using AI
 
 ---
