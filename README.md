@@ -50,14 +50,6 @@ Building intelligent, scalable applications by combining modern web technologies
 
 ---
 
-## 🔥 Top Languages
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YOUR_USERNAME&layout=compact&theme=radical" />
-</p>
-
----
-
 ## 📌 Featured Projects
 - 🚀 AI-powered apps (LLM, RAG, workflows)
 - 🌐 Full stack scalable applications
@@ -68,10 +60,10 @@ Building intelligent, scalable applications by combining modern web technologies
 ## 🤝 Connect with Me
 
 <p align="left">
-<a href="https://linkedin.com/in/YOUR_LINKEDIN" target="blank">
+<a href="https://www.linkedin.com/in/hari-nagarajan-s" target="blank">
 <img src="https://img.shields.io/badge/-LinkedIn-000?&logo=linkedin" />
 </a>
-<a href="mailto:YOUR_EMAIL">
+<a href="mailto:snshari80@gmail.com">
 <img src="https://img.shields.io/badge/-Email-000?&logo=gmail" />
 </a>
 </p>
